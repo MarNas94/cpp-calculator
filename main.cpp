@@ -1,18 +1,36 @@
 #include <iostream>
-#include <cmath>    // dla sqrt() i log10()
+#include <cmath>     // sqrt(), pow(), log10()
+#include <limits>    // numeric_limits
 using namespace std;
+
+// Funkcja pomocnicza do bezpiecznego wczytywania liczby
+double wczytajLiczbe(const string& komunikat) {
+    double x;
+    while (true) {
+        cout << komunikat;
+        cin >> x;
+        if (cin.fail()) {
+            cout << "Błąd: proszę podać prawidłową liczbę!" << endl;
+            cin.clear(); // czyści flagę błędu
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // usuwa błędne dane z bufora
+        } else {
+            return x;
+        }
+    }
+}
 
 int main() {
     double a, b;
     char oper;
     bool kontynuuj = true;
 
-    cout << "=== Rozszerzony kalkulator ===" << endl;
+    cout << "=== Kalkulator zaawansowany ===" << endl;
     cout << "Dostępne operacje:" << endl;
     cout << "+  - dodawanie" << endl;
     cout << "-  - odejmowanie" << endl;
     cout << "*  - mnożenie" << endl;
     cout << "/  - dzielenie" << endl;
+    cout << "p  - potęgowanie (a^b)" << endl;
     cout << "s  - pierwiastek kwadratowy" << endl;
     cout << "l  - logarytm dziesiętny (log10)" << endl;
     cout << "q  - wyjście z programu" << endl;
@@ -26,10 +44,9 @@ int main() {
             case '-':
             case '*':
             case '/':
-                cout << "Podaj pierwszą liczbę: ";
-                cin >> a;
-                cout << "Podaj drugą liczbę: ";
-                cin >> b;
+            case 'p':
+                a = wczytajLiczbe("Podaj pierwszą liczbę: ");
+                b = wczytajLiczbe("Podaj drugą liczbę: ");
                 cout << "Wynik: ";
                 if (oper == '+') cout << a + b;
                 else if (oper == '-') cout << a - b;
@@ -40,12 +57,12 @@ int main() {
                     else
                         cout << "Błąd: dzielenie przez zero!";
                 }
+                else if (oper == 'p') cout << pow(a, b);
                 cout << endl;
                 break;
 
             case 's':
-                cout << "Podaj liczbę do spierwiastkowania: ";
-                cin >> a;
+                a = wczytajLiczbe("Podaj liczbę do spierwiastkowania: ");
                 if (a >= 0)
                     cout << "Wynik: " << sqrt(a) << endl;
                 else
@@ -53,8 +70,7 @@ int main() {
                 break;
 
             case 'l':
-                cout << "Podaj liczbę do obliczenia log10: ";
-                cin >> a;
+                a = wczytajLiczbe("Podaj liczbę do obliczenia log10: ");
                 if (a > 0)
                     cout << "Wynik: " << log10(a) << endl;
                 else
@@ -67,7 +83,7 @@ int main() {
                 break;
 
             default:
-                cout << "Nieznany operator!" << endl;
+                cout << "Nieznany operator! Spróbuj ponownie." << endl;
         }
     }
 
